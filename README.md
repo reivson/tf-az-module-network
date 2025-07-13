@@ -156,6 +156,11 @@ Para detalhes completos dos inputs, consulte [variables.tf](./variables.tf).
 
 Para detalhes completos dos outputs, consulte [outputs.tf](./outputs.tf).
 
+## 📚 Documentação Técnica
+
+<!-- BEGIN_TF_DOCS -->
+<!-- END_TF_DOCS -->
+
 ## 🏷️ Versionamento
 
 Este módulo segue [Semantic Versioning](https://semver.org/). Para as versões disponíveis, veja as [tags neste repositório](https://github.com/seu-org/tf-az-module-network/tags).
