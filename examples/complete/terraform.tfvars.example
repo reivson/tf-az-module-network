@@ -1,0 +1,14 @@
+# Exemplo completo de configuração
+resource_group_name = "rg-network-complete-example"
+location           = "East US"
+vnet_name          = "vnet-complete-example"
+vnet_address_space = ["10.0.0.0/16"]
+dns_servers        = ["8.8.8.8", "8.8.4.4"]
+
+tags = {
+  Environment = "Development"
+  Project     = "NetworkModule"
+  Example     = "Complete"
+  ManagedBy   = "Terraform"
+  Owner       = "DevOps Team"
+}

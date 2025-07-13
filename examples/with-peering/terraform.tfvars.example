@@ -1,0 +1,24 @@
+# Exemplo de VNET Peering
+resource_group_name = "rg-peering-example"
+location           = "East US"
+
+# Hub Network Configuration
+hub_vnet_name          = "vnet-hub"
+hub_vnet_address_space = ["10.0.0.0/16"]
+
+# Spoke Network Configuration
+spoke_vnet_name          = "vnet-spoke"
+spoke_vnet_address_space = ["10.1.0.0/16"]
+
+# Management IP (substitua pelo seu IP público para maior segurança)
+# Para descobrir seu IP: curl ifconfig.me
+management_ip = "0.0.0.0/0"  # ATENÇÃO: Use um IP específico em produção
+
+tags = {
+  Environment = "Development"
+  Project     = "NetworkModule"
+  Example     = "VNETPeering"
+  ManagedBy   = "Terraform"
+  Owner       = "DevOps Team"
+  CostCenter  = "IT"
+}
