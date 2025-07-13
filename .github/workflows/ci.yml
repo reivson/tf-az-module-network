@@ -70,10 +70,14 @@ jobs:
   docs:
     name: Generate Docs
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Generate terraform docs
       uses: terraform-docs/gh-actions@main
@@ -81,4 +85,5 @@ jobs:
         working-dir: .
         output-file: README.md
         output-method: inject
-        git-push: "false"
+        git-push: "true"
+        git-commit-message: "docs: update terraform documentation"
