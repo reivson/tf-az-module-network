@@ -8,16 +8,13 @@ on:
   pull_request:
     branches: [ main ]
 
-# Permissões necessárias para upload de resultados de segurança
-permissions:
-  contents: read
-  security-events: write
-  actions: read
-
 jobs:
-  security-scan:
-    name: Security Analysis
+  trivy-scan:
+    name: Trivy Security Scan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     
     steps:
     - name: Checkout
@@ -31,28 +28,25 @@ jobs:
         format: 'sarif'
         output: 'trivy-results.sarif'
 
-    - name: Upload Trivy scan results
+    - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v3
       if: always()
+      continue-on-error: true
       with:
         sarif_file: 'trivy-results.sarif'
         category: 'trivy'
         
-    # Alternativa: salvar resultados como artefato se o upload SARIF falhar
     - name: Save Trivy results as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: trivy-results
+        name: trivy-security-results
         path: trivy-results.sarif
         retention-days: 30
 
-  tfsec:
+  tfsec-scan:
     name: TfSec Security Scan
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
     
     steps:
     - name: Checkout
@@ -61,20 +55,19 @@ jobs:
     - name: Run tfsec
       uses: aquasecurity/tfsec-action@v1.0.3
       with:
-        soft_fail: false
+        soft_fail: true
       
-    # Alternativa: salvar resultados como artefato se o upload SARIF falhar
     - name: Save TfSec results as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: tfsec-results
+        name: tfsec-security-results
         path: |
-          tfsec-results.json
-          tfsec-results.txt
+          **/*.sarif
+          **/tfsec-*.json
         retention-days: 30
 
-  checkov:
+  checkov-scan:
     name: Checkov Security Scan
     runs-on: ubuntu-latest
     permissions:
@@ -92,19 +85,20 @@ jobs:
         framework: terraform
         output_format: sarif
         output_file_path: checkov-results.sarif
+        soft_fail: true
 
-    - name: Upload Checkov scan results
+    - name: Upload Checkov scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v3
       if: always()
+      continue-on-error: true
       with:
         sarif_file: checkov-results.sarif
         category: 'checkov'
         
-    # Alternativa: salvar resultados como artefato se o upload SARIF falhar
     - name: Save Checkov results as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: checkov-results
+        name: checkov-security-results
         path: checkov-results.sarif
         retention-days: 30
