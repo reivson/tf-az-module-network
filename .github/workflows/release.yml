@@ -5,6 +5,11 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+  actions: read
+  checks: write
+
 jobs:
   release:
     name: Create Release
@@ -24,15 +29,14 @@ jobs:
         tag: ${{ github.ref_name }}
 
     - name: Create Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: ncipollo/release-action@v1
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        tag: ${{ github.ref_name }}
+        name: Release ${{ github.ref_name }}
         body: ${{ steps.changelog.outputs.changes }}
         draft: false
         prerelease: false
+        token: ${{ secrets.GITHUB_TOKEN }}
 
   terraform-registry:
     name: Terraform Registry
