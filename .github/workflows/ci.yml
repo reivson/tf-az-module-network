@@ -79,6 +79,6 @@ jobs:
       uses: terraform-docs/gh-actions@main
       with:
         working-dir: .
-        output-file: TERRAFORM_DOCS.md
+        output-file: README.md
         output-method: inject
         git-push: "false"
