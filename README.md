@@ -159,6 +159,84 @@ Para detalhes completos dos outputs, consulte [outputs.tf](./outputs.tf).
 ## 📚 Documentação Técnica
 
 <!-- BEGIN_TF_DOCS -->
+## Requirements
+
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.2 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.0 |
+
+## Providers
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.0 |
+
+## Modules
+
+## Modules
+
+No modules.
+
+## Resources
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [azurerm_nat_gateway.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway) | resource |
+| [azurerm_nat_gateway_public_ip_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway_public_ip_association) | resource |
+| [azurerm_network_security_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) | resource |
+| [azurerm_public_ip.nat_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
+| [azurerm_route_table.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route_table) | resource |
+| [azurerm_subnet.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
+| [azurerm_subnet_nat_gateway_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_nat_gateway_association) | resource |
+| [azurerm_subnet_network_security_group_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association) | resource |
+| [azurerm_subnet_route_table_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_route_table_association) | resource |
+| [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
+| [azurerm_virtual_network_peering.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_peering) | resource |
+
+## Inputs
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_dns_servers"></a> [dns\_servers](#input\_dns\_servers) | Lista de servidores DNS personalizados | `list(string)` | `[]` | no |
+| <a name="input_location"></a> [location](#input\_location) | Localização dos recursos Azure | `string` | n/a | yes |
+| <a name="input_nat_gateway"></a> [nat\_gateway](#input\_nat\_gateway) | Configuração do NAT Gateway | <pre>object({<br/>    enabled                 = bool<br/>    name                    = optional(string)<br/>    idle_timeout_in_minutes = optional(number, 4)<br/>    sku_name                = optional(string, "Standard")<br/>    public_ip_count         = optional(number, 1)<br/>    associated_subnets      = optional(list(string), [])<br/>  })</pre> | <pre>{<br/>  "enabled": false<br/>}</pre> | no |
+| <a name="input_network_security_groups"></a> [network\_security\_groups](#input\_network\_security\_groups) | Configuração dos Network Security Groups | <pre>map(object({<br/>    security_rules = optional(list(object({<br/>      name                         = string<br/>      priority                     = number<br/>      direction                    = string<br/>      access                       = string<br/>      protocol                     = string<br/>      source_port_range            = optional(string)<br/>      destination_port_range       = optional(string)<br/>      source_port_ranges           = optional(list(string))<br/>      destination_port_ranges      = optional(list(string))<br/>      source_address_prefix        = optional(string)<br/>      destination_address_prefix   = optional(string)<br/>      source_address_prefixes      = optional(list(string))<br/>      destination_address_prefixes = optional(list(string))<br/>    })), [])<br/>    associated_subnets = optional(list(string), [])<br/>  }))</pre> | `{}` | no |
+| <a name="input_peering_connections"></a> [peering\_connections](#input\_peering\_connections) | Configuração de VNET Peering | <pre>map(object({<br/>    remote_virtual_network_id    = string<br/>    allow_virtual_network_access = optional(bool, true)<br/>    allow_forwarded_traffic      = optional(bool, false)<br/>    allow_gateway_transit        = optional(bool, false)<br/>    use_remote_gateways          = optional(bool, false)<br/>  }))</pre> | `{}` | no |
+| <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Nome do Resource Group onde os recursos serão criados | `string` | n/a | yes |
+| <a name="input_route_tables"></a> [route\_tables](#input\_route\_tables) | Configuração das Route Tables | <pre>map(object({<br/>    disable_bgp_route_propagation = optional(bool, false)<br/>    routes = optional(list(object({<br/>      name                   = string<br/>      address_prefix         = string<br/>      next_hop_type          = string<br/>      next_hop_in_ip_address = optional(string)<br/>    })), [])<br/>    associated_subnets = optional(list(string), [])<br/>  }))</pre> | `{}` | no |
+| <a name="input_subnets"></a> [subnets](#input\_subnets) | Configuração das subnets | <pre>map(object({<br/>    address_prefixes  = list(string)<br/>    service_endpoints = optional(list(string), [])<br/>    delegation = optional(object({<br/>      name = string<br/>      service_delegation = object({<br/>        name    = string<br/>        actions = optional(list(string))<br/>      })<br/>    }))<br/>    private_endpoint_network_policies_enabled     = optional(bool, true)<br/>    private_link_service_network_policies_enabled = optional(bool, true)<br/>  }))</pre> | `{}` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags para aplicar aos recursos | `map(string)` | `{}` | no |
+| <a name="input_vnet_address_space"></a> [vnet\_address\_space](#input\_vnet\_address\_space) | Espaço de endereçamento da VNET | `list(string)` | <pre>[<br/>  "10.0.0.0/16"<br/>]</pre> | no |
+| <a name="input_vnet_name"></a> [vnet\_name](#input\_vnet\_name) | Nome da Virtual Network | `string` | n/a | yes |
+
+## Outputs
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_nat_gateway_id"></a> [nat\_gateway\_id](#output\_nat\_gateway\_id) | ID do NAT Gateway (se criado) |
+| <a name="output_nat_gateway_public_ip_ids"></a> [nat\_gateway\_public\_ip\_ids](#output\_nat\_gateway\_public\_ip\_ids) | IDs dos Public IPs do NAT Gateway |
+| <a name="output_network_security_group_ids"></a> [network\_security\_group\_ids](#output\_network\_security\_group\_ids) | IDs dos Network Security Groups |
+| <a name="output_peering_ids"></a> [peering\_ids](#output\_peering\_ids) | IDs das conexões de peering |
+| <a name="output_route_table_ids"></a> [route\_table\_ids](#output\_route\_table\_ids) | IDs das Route Tables |
+| <a name="output_subnet_address_prefixes"></a> [subnet\_address\_prefixes](#output\_subnet\_address\_prefixes) | Address prefixes das subnets |
+| <a name="output_subnet_ids"></a> [subnet\_ids](#output\_subnet\_ids) | IDs das subnets criadas |
+| <a name="output_subnet_names"></a> [subnet\_names](#output\_subnet\_names) | Nomes das subnets criadas |
+| <a name="output_vnet_address_space"></a> [vnet\_address\_space](#output\_vnet\_address\_space) | Espaço de endereçamento da Virtual Network |
+| <a name="output_vnet_id"></a> [vnet\_id](#output\_vnet\_id) | ID da Virtual Network |
+| <a name="output_vnet_location"></a> [vnet\_location](#output\_vnet\_location) | Localização da Virtual Network |
+| <a name="output_vnet_name"></a> [vnet\_name](#output\_vnet\_name) | Nome da Virtual Network |
+| <a name="output_vnet_resource_group_name"></a> [vnet\_resource\_group\_name](#output\_vnet\_resource\_group\_name) | Nome do Resource Group da Virtual Network |
 <!-- END_TF_DOCS -->
 
 ## 🏷️ Versionamento
