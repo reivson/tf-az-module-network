@@ -8,6 +8,12 @@ on:
   pull_request:
     branches: [ main ]
 
+# Permissões necessárias para upload de resultados de segurança
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
 jobs:
   security-scan:
     name: Security Analysis
@@ -27,12 +33,26 @@ jobs:
 
     - name: Upload Trivy scan results
       uses: github/codeql-action/upload-sarif@v3
+      if: always()
       with:
         sarif_file: 'trivy-results.sarif'
+        category: 'trivy'
+        
+    # Alternativa: salvar resultados como artefato se o upload SARIF falhar
+    - name: Save Trivy results as artifact
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: trivy-results
+        path: trivy-results.sarif
+        retention-days: 30
 
   tfsec:
     name: TfSec Security Scan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     
     steps:
     - name: Checkout
@@ -42,10 +62,24 @@ jobs:
       uses: aquasecurity/tfsec-action@v1.0.3
       with:
         soft_fail: false
+      
+    # Alternativa: salvar resultados como artefato se o upload SARIF falhar
+    - name: Save TfSec results as artifact
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: tfsec-results
+        path: |
+          tfsec-results.json
+          tfsec-results.txt
+        retention-days: 30
 
   checkov:
     name: Checkov Security Scan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     
     steps:
     - name: Checkout
@@ -61,5 +95,16 @@ jobs:
 
     - name: Upload Checkov scan results
       uses: github/codeql-action/upload-sarif@v3
+      if: always()
       with:
         sarif_file: checkov-results.sarif
+        category: 'checkov'
+        
+    # Alternativa: salvar resultados como artefato se o upload SARIF falhar
+    - name: Save Checkov results as artifact
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: checkov-results
+        path: checkov-results.sarif
+        retention-days: 30
